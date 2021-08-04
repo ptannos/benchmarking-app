@@ -18,26 +18,34 @@ const App = () => {
   };
 
   // As user submits, look up engineer by ID and return their percentile
-  const handleSubmit = (evt) => {
+  const calculatePercentile = (engineer) => {
+    let lowerScoreSameTitle = 0;
+    let sameTitles = [];
+    for (let i = 1; i < data.length; i++) {
+      if (data[i].title === engineer.title) {
+        sameTitles.push(data[i]);
+        if (Number(data[i].coding_score) < Number(engineer.coding_score)) {
+          lowerScoreSameTitle += 1;
+        }
+      }
+      // Calculate percentile: number of values below "x" / total number of values * 100
+      setPercentile((lowerScoreSameTitle / sameTitles.length) * 100);
+    }
+    console.log(lowerScoreSameTitle);
+  };
+
+  const handleSubmit = async (evt) => {
     evt.preventDefault();
 
     // Find engineer by ID, set state
     for (let i = 1; i < data.length; i++) {
       if (String(data[i].candidate_id) === id) {
-        setEngineer(data[i]);
+        await setEngineer(data[i]);
       }
     }
-
-    // Calculate percentile: number of values below "x" / total number of values * 100
-    let totalLower = 0;
-    for (let i = 1; i < data.length; i++) {
-      if (Number(data[i].coding_score) < Number(engineer.coding_score)) {
-        totalLower += 1;
-      }
-      setPercentile((totalLower / data.length) * 100);
-    }
+    calculatePercentile(engineer);
   };
-  console.log("percentile", percentile);
+
   return (
     <div className="App">
       <header className="App-header">
@@ -52,12 +60,19 @@ const App = () => {
           <button type="submit">Submit</button>
         </form>
       </div>
-      <div className="result">
-        Engineer ID#{candidate_id} has a coding score of {coding_score}, a
-        communication score of {communication_score}, and is in the{" "}
-        {Math.round(percentile)}
-        th percentile!
-      </div>
+      {/* If an engineer with the ID is found, return results */}
+      {Object.keys(engineer).length !== 0 ? (
+        <div className="result">
+          Engineer ID#{candidate_id}
+          <br />
+          Coding Skills: {Math.round(percentile)}
+          th percentile!
+          <br />
+          Communication Skills:
+        </div>
+      ) : (
+        <p>Please input a valid ID.</p>
+      )}
     </div>
   );
 };
