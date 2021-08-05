@@ -1,4 +1,4 @@
-const csvFile = `candidate_id,communication_score,coding_score,title,company_id
+const engineerList = `candidate_id,communication_score,coding_score,title,company_id
 889,114028,180944,Engineer,2
 890,62734,64000,Engineer,2
 891,167656,231216,Engineer,2
@@ -59,21 +59,4 @@ const csvFile = `candidate_id,communication_score,coding_score,title,company_id
 946,74387,134410,Engineer,5
 947,85180,133854,Engineer,5`;
 
-// Split into separate lines
-const lines = csvFile.split("\n");
-
-const headers = lines[0].split(",");
-
-let data = [];
-
-// Get each row of data, ignoring the headers
-for (let i = 1; i < lines.length; i++) {
-  let row = lines[i].split(",");
-  data[i] = {};
-  // Match with headers with the same index, then send to data
-  for (let j = 0; j < row.length; j++) {
-    data[i][headers[j]] = row[j];
-  }
-}
-
-export default data;
+export default engineerList;

@@ -1,8 +1,5 @@
-// import "./App.css";
 import React, { useState, useEffect } from "react";
-import data from "./data";
-
-console.log(data);
+import { allEngineers, allCompanies } from "./datasources/data";
 
 const App = () => {
   const [id, setId] = useState(0);
@@ -11,33 +8,61 @@ const App = () => {
   const [codingPercentile, setCodingPercentile] = useState(0);
   const [communicationPercentile, setCommunicationPercentile] = useState(0);
 
-  const { candidate_id } = engineer;
-
   const calculatePercentile = async (engineer) => {
     let lowerCodingScore = 0;
     let lowerCommunicationScore = 0;
-    let sameTitles = [];
-    // Find other engineers with the same title
-    for (let i = 1; i < data.length; i++) {
-      if (data[i].title === engineer.title) {
-        sameTitles.push(data[i]);
-        // Find other engineers, same title, lower scores
-        if (Number(data[i].coding_score) < Number(engineer.coding_score)) {
-          lowerCodingScore += 1;
-        }
-        if (
-          Number(data[i].communication_score) <
-          Number(engineer.communication_score)
-        ) {
-          lowerCommunicationScore += 1;
-        }
-      }
-      // Percentile = number of values below "x" / total number of values * 100
-      await setCodingPercentile((lowerCodingScore / sameTitles.length) * 100);
-      await setCommunicationPercentile(
-        (lowerCommunicationScore / sameTitles.length) * 100
+    let similarEngineers = [];
+
+    // Check if 2 companies are similar
+    const areSimilar = (id1, id2) => {
+      const companyOne = allCompanies.filter((obj) => {
+        return obj.company_id === id1;
+      });
+      const companyTwo = allCompanies.filter((obj) => {
+        return obj.company_id === id2;
+      });
+      console.log("company 1 and 2", companyOne, companyTwo);
+      return (
+        Math.abs(
+          Number(companyOne[0]["fractal_index"]) -
+            Number(companyTwo[0]["fractal_index"])
+        ) < 0.15
       );
+    };
+
+    // Find other engineers with same title, at other similar companies
+    for (let i = 1; i < allEngineers.length; i++) {
+      if (
+        allEngineers[i].title === engineer.title &&
+        allEngineers[i].company_id !== engineer.company_id &&
+        areSimilar(allEngineers[i].company_id, engineer.company_id)
+      ) {
+        similarEngineers.push(allEngineers[i]);
+      }
     }
+
+    // Total scores that are lower
+    for (let i = 0; i < similarEngineers.length; i++) {
+      if (
+        Number(similarEngineers[i].coding_score) < Number(engineer.coding_score)
+      ) {
+        lowerCodingScore += 1;
+      }
+      if (
+        Number(similarEngineers[i].communication_score) <
+        Number(engineer.communication_score)
+      ) {
+        lowerCommunicationScore += 1;
+      }
+    }
+
+    // Percentile = number of values below "x" / total number of values * 100
+    await setCodingPercentile(
+      (lowerCodingScore / similarEngineers.length) * 100
+    );
+    await setCommunicationPercentile(
+      (lowerCommunicationScore / similarEngineers.length) * 100
+    );
   };
 
   // Recalculates percentiles every time engineer changes
@@ -53,9 +78,9 @@ const App = () => {
   // When form is submitted, find engineer by ID
   const handleSubmit = async (evt) => {
     evt.preventDefault();
-    for (let i = 1; i < data.length; i++) {
-      if (String(data[i].candidate_id) === id) {
-        await setEngineer(data[i]);
+    for (let i = 1; i < allEngineers.length; i++) {
+      if (String(allEngineers[i].candidate_id) === id) {
+        await setEngineer(allEngineers[i]);
         await setExist(true);
         return;
       }
@@ -81,13 +106,13 @@ const App = () => {
       {/* If an engineer with the ID is found, return results */}
       {exist === true && Object.keys(engineer).length !== 0 ? (
         <div className="result">
-          Engineer ID#{candidate_id}
-          <br />
-          Coding Skills: {Math.round(codingPercentile)}
-          th percentile
-          <br />
-          Communication Skills: {Math.round(communicationPercentile)}th
-          percentile
+          <p>
+            Coding Skills: {Math.round(codingPercentile)}
+            th percentile
+            <br />
+            Communication Skills: {Math.round(communicationPercentile)}th
+            percentile
+          </p>
         </div>
       ) : null}
 
