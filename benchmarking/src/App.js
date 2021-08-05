@@ -21,7 +21,6 @@ const App = () => {
       const companyTwo = allCompanies.filter((obj) => {
         return obj.company_id === id2;
       });
-      console.log("company 1 and 2", companyOne, companyTwo);
       return (
         Math.abs(
           Number(companyOne[0]["fractal_index"]) -
