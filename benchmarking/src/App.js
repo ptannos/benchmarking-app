@@ -9,14 +9,9 @@ const App = () => {
   const [communicationPercentile, setCommunicationPercentile] = useState(0);
 
   const calculatePercentile = async (candidate_id) => {
-    let lowerCodingScore = 0;
-    let lowerCommunicationScore = 0;
-    let similarEngineers = [];
     let currEngineer = allEngineers.filter(
       (obj) => obj.candidate_id === candidate_id
     )[0];
-
-    console.log("current", currEngineer);
 
     // Check if 2 companies are similar
     const areSimilar = (id1, id2) => {
@@ -35,18 +30,17 @@ const App = () => {
     };
 
     // Find other engineers with same title, at other similar companies
-    for (let i = 1; i < allEngineers.length; i++) {
-      if (
+    let similarEngineers = allEngineers.filter(
+      (engineer) =>
         currEngineer &&
-        allEngineers[i].title === currEngineer.title &&
-        allEngineers[i].company_id !== currEngineer.company_id &&
-        areSimilar(allEngineers[i].company_id, currEngineer.company_id)
-      ) {
-        similarEngineers.push(allEngineers[i]);
-      }
-    }
+        engineer.title === currEngineer.title &&
+        engineer.company_id !== currEngineer.company_id &&
+        areSimilar(engineer.company_id, currEngineer.company_id)
+    );
 
     // Total scores that are lower
+    let lowerCodingScore = 0;
+    let lowerCommunicationScore = 0;
     for (let i = 0; i < similarEngineers.length; i++) {
       if (
         Number(similarEngineers[i].coding_score) <
@@ -73,8 +67,8 @@ const App = () => {
 
   // Recalculates percentiles every time engineer changes
   useEffect(() => {
-    calculatePercentile(id);
-  }, [id]);
+    calculatePercentile(engineer.candidate_id);
+  }, [engineer]);
 
   // As user starts typing, update ID on state
   const handleChange = async (evt) => {
@@ -121,7 +115,7 @@ const App = () => {
           </p>
         </div>
       ) : null}
-
+      {/* If engineer does not exist, display a helpful message */}
       {exist === false ? <p>Please input a valid ID.</p> : null}
     </div>
   );
