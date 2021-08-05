@@ -8,10 +8,15 @@ const App = () => {
   const [codingPercentile, setCodingPercentile] = useState(0);
   const [communicationPercentile, setCommunicationPercentile] = useState(0);
 
-  const calculatePercentile = async (engineer) => {
+  const calculatePercentile = async (candidate_id) => {
     let lowerCodingScore = 0;
     let lowerCommunicationScore = 0;
     let similarEngineers = [];
+    let currEngineer = allEngineers.filter(
+      (obj) => obj.candidate_id === candidate_id
+    )[0];
+
+    console.log("current", currEngineer);
 
     // Check if 2 companies are similar
     const areSimilar = (id1, id2) => {
@@ -32,9 +37,10 @@ const App = () => {
     // Find other engineers with same title, at other similar companies
     for (let i = 1; i < allEngineers.length; i++) {
       if (
-        allEngineers[i].title === engineer.title &&
-        allEngineers[i].company_id !== engineer.company_id &&
-        areSimilar(allEngineers[i].company_id, engineer.company_id)
+        currEngineer &&
+        allEngineers[i].title === currEngineer.title &&
+        allEngineers[i].company_id !== currEngineer.company_id &&
+        areSimilar(allEngineers[i].company_id, currEngineer.company_id)
       ) {
         similarEngineers.push(allEngineers[i]);
       }
@@ -43,13 +49,14 @@ const App = () => {
     // Total scores that are lower
     for (let i = 0; i < similarEngineers.length; i++) {
       if (
-        Number(similarEngineers[i].coding_score) < Number(engineer.coding_score)
+        Number(similarEngineers[i].coding_score) <
+        Number(currEngineer.coding_score)
       ) {
         lowerCodingScore += 1;
       }
       if (
         Number(similarEngineers[i].communication_score) <
-        Number(engineer.communication_score)
+        Number(currEngineer.communication_score)
       ) {
         lowerCommunicationScore += 1;
       }
@@ -66,8 +73,8 @@ const App = () => {
 
   // Recalculates percentiles every time engineer changes
   useEffect(() => {
-    calculatePercentile(engineer);
-  }, [engineer]);
+    calculatePercentile(id);
+  }, [id]);
 
   // As user starts typing, update ID on state
   const handleChange = async (evt) => {
