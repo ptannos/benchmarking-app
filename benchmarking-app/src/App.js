@@ -9,33 +9,15 @@ const App = () => {
   const [agilityPercentile, setAgilityPercentile] = useState(0);
   const [friendlinessPercentile, setFriendlinessPercentile] = useState(0);
   const [intelligencePercentile, setIntelligencePercentile] = useState(0);
+  const [shelter, setShelter] = useState("");
 
   const calculatePercentile = async (shiba_id) => {
     let currShiba = allShibas.filter((obj) => obj.shiba_id === shiba_id)[0];
 
-    // Check if 2 companies are similar
-    // const areSimilar = (id1, id2) => {
-    //   const companyOne = allShelters.filter((obj) => {
-    //     return obj.company_id === id1;
-    //   });
-    //   const companyTwo = allShelters.filter((obj) => {
-    //     return obj.company_id === id2;
-    //   });
-    //   return (
-    //     Math.abs(
-    //       Number(companyOne[0]["fractal_index"]) -
-    //         Number(companyTwo[0]["fractal_index"])
-    //     ) < 0.15
-    //   );
-    // };
-
     // Find other shibas in the same age group (puppy, adult, or senior)
     let similarShibas = allShibas.filter(
       (shiba) => currShiba && shiba.age_group === currShiba.age_group
-      // shiba.company_id !== currShiba.company_id &&
-      // areSimilar(shiba.company_id, currShiba.company_id)
     );
-    console.log("similar shibas", similarShibas);
 
     // Total scores that are lower
     let lowerAdaptabilityScore = 0;
@@ -90,6 +72,14 @@ const App = () => {
     calculatePercentile(shiba.shiba_id);
   }, [shiba]);
 
+  const getShelter = async (shiba) => {
+    let currShelter = allShelters.filter(
+      (obj) => obj.shelter_id === shiba.shelter_id
+    )[0];
+    console.log(currShelter);
+    await setShelter(currShelter);
+  };
+
   // As user starts typing, update ID on state
   const handleChange = async (evt) => {
     await setId(evt.target.value);
@@ -101,6 +91,7 @@ const App = () => {
     for (let i = 1; i < allShibas.length; i++) {
       if (String(allShibas[i].shiba_id) === id) {
         await setShiba(allShibas[i]);
+        await getShelter(allShibas[i]);
         await setExist(true);
         return;
       }
@@ -132,8 +123,15 @@ const App = () => {
       {/* If a shiba with the ID is found, return results */}
       {exist === true && Object.keys(shiba).length !== 0 ? (
         <div className="result">
-          <p>Name: {shiba.name}</p>
-          <p>Age group: {shiba.age_group}</p>
+          <p>
+            Name: {shiba.name}
+            <br />
+            Age group: {shiba.age_group}
+          </p>
+          <br />
+          {/* {console.log(shelter.shelter_name)} */}
+          Available for adoption at:{" "}
+          {Object.keys(shelter) !== 0 ? shelter.shelter_name : ""}
           <p>
             Adaptability: {Math.round(adaptabilityPercentile)}
             th percentile
