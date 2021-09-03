@@ -1,5 +1,5 @@
-import companyList from "./companies.js";
-import engineerList from "./engineers.js";
+import shelterList from "./shelters.js";
+import shibaList from "./shibas.js";
 
 const csvToObject = (list) => {
   // Split into separate lines, get headers
@@ -20,5 +20,5 @@ const csvToObject = (list) => {
   return data;
 };
 
-export const allEngineers = csvToObject(engineerList);
-export const allCompanies = csvToObject(companyList);
+export const allShibas = csvToObject(shibaList);
+export const allShelters = csvToObject(shelterList);
