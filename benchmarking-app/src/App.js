@@ -132,6 +132,8 @@ const App = () => {
       {/* If a shiba with the ID is found, return results */}
       {exist === true && Object.keys(shiba).length !== 0 ? (
         <div className="result">
+          <p>Name: {shiba.name}</p>
+          <p>Age group: {shiba.age_group}</p>
           <p>
             Adaptability: {Math.round(adaptabilityPercentile)}
             th percentile
