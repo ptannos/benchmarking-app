@@ -114,6 +114,11 @@ const App = () => {
       <header className="App-header">
         <p>Shiba Inu Benchmarking App</p>
       </header>
+      <img
+        src="https://media3.giphy.com/media/1YeNJK6FptDdq1q59K/200.gif"
+        alt="shiba gif"
+      />
+
       <div className="form">
         <form id="App-form" onSubmit={handleSubmit}>
           <label htmlFor="id">Enter Shiba's ID:</label>
@@ -123,6 +128,7 @@ const App = () => {
           <button type="submit">Submit</button>
         </form>
       </div>
+
       {/* If a shiba with the ID is found, return results */}
       {exist === true && Object.keys(shiba).length !== 0 ? (
         <div className="result">
