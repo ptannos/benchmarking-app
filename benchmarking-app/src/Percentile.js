@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Chart from "./Chart";
 
 const Percentile = (props) => {
   const { shiba, allShibas } = props;
@@ -15,12 +16,6 @@ const Percentile = (props) => {
       (shiba) => currShiba && shiba.age_group === currShiba.age_group
     );
 
-    // Total scores that are lower
-    // let lowerAdaptabilityScore = 0;
-    // let lowerAgilityScore = 0;
-    // let lowerFriendlinessScore = 0;
-    // let lowerIntelligenceScore = 0;
-
     const getScore = (traitScore) => {
       let lowerScores = 0;
 
@@ -31,48 +26,16 @@ const Percentile = (props) => {
           lowerScores += 1;
         }
       }
-      return lowerScores;
+      let score = (lowerScores / similarShibas.length) * 100;
+
+      return score;
     };
-    // for (let i = 0; i < similarShibas.length; i++) {
-    //   if (
-    //     Number(similarShibas[i].adaptability_score) <
-    //     Number(currShiba.adaptability_score)
-    //   ) {
-    //     lowerAdaptabilityScore += 1;
-    //   }
-    //   if (
-    //     Number(similarShibas[i].agility_score) < Number(currShiba.agility_score)
-    //   ) {
-    //     lowerAgilityScore += 1;
-    //   }
-    //   if (
-    //     Number(similarShibas[i].friendliness_score) <
-    //     Number(currShiba.friendliness_score)
-    //   ) {
-    //     lowerFriendlinessScore += 1;
-    //   }
-    //   if (
-    //     Number(similarShibas[i].intelligence_score) <
-    //     Number(currShiba.intelligence_score)
-    //   ) {
-    //     lowerIntelligenceScore += 1;
-    //   }
-    // }
 
     // Percentile = number of values below "x" / total number of values * 100
-    // console.log("lower score", lowerAdaptabilityScore);
-    await setAdaptabilityPercentile(
-      (getScore("adaptability_score") / similarShibas.length) * 100
-    );
-    await setAgilityPercentile(
-      (getScore("agility_score") / similarShibas.length) * 100
-    );
-    await setFriendlinessPercentile(
-      (getScore("friendliness_score") / similarShibas.length) * 100
-    );
-    await setIntelligencePercentile(
-      (getScore("intelligence_score") / similarShibas.length) * 100
-    );
+    await setAdaptabilityPercentile(getScore("adaptability_score"));
+    await setAgilityPercentile(getScore("agility_score"));
+    await setFriendlinessPercentile(getScore("friendliness_score"));
+    await setIntelligencePercentile(getScore("intelligence_score"));
   };
   console.log(props);
 
@@ -93,6 +56,7 @@ const Percentile = (props) => {
         <br />
         Intelligence: {Math.round(intelligencePercentile)}th percentile
       </p>
+      <Chart />
     </>
   );
 };
