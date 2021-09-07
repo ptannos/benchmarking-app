@@ -6,8 +6,17 @@ body {
     sans-serif;
 }
 
-.App-header {
-  font-size: 28px;
+header {
+  font-size: 50px;
+  color: white;
+  background-color: #767e63;
+  padding: 5px;
+}
+
+header p {
+  font-size: 20px;
+  display: inline;
+  padding: 20px;
 }
 
 input {
@@ -21,7 +30,7 @@ code {
 }
 
 img {
-  margin: 5px;
+  margin: 35px;
 }
 
 .form {
