@@ -1,72 +1,84 @@
 import React, { useEffect, useState } from "react";
 
 const Percentile = (props) => {
-  const { shiba, allShibas } = props || {};
+  const { shiba, allShibas } = props;
   const [adaptabilityPercentile, setAdaptabilityPercentile] = useState(0);
   const [agilityPercentile, setAgilityPercentile] = useState(0);
   const [friendlinessPercentile, setFriendlinessPercentile] = useState(0);
   const [intelligencePercentile, setIntelligencePercentile] = useState(0);
 
-  const calculatePercentile = async (shiba_id) => {
-    let currShiba = allShibas.filter((obj) => obj.shiba_id === shiba_id)[0];
-
+  const calculatePercentile = async (shiba) => {
     // Find other shibas in the same age group (puppy, adult, or senior)
+    let currShiba = shiba;
+
     let similarShibas = allShibas.filter(
       (shiba) => currShiba && shiba.age_group === currShiba.age_group
     );
 
     // Total scores that are lower
-    let lowerAdaptabilityScore = 0;
-    let lowerAgilityScore = 0;
-    let lowerFriendlinessScore = 0;
-    let lowerIntelligenceScore = 0;
+    // let lowerAdaptabilityScore = 0;
+    // let lowerAgilityScore = 0;
+    // let lowerFriendlinessScore = 0;
+    // let lowerIntelligenceScore = 0;
 
-    for (let i = 0; i < similarShibas.length; i++) {
-      if (
-        Number(similarShibas[i].adaptability_score) <
-        Number(currShiba.adaptability_score)
-      ) {
-        lowerAdaptabilityScore += 1;
+    const getScore = (traitScore) => {
+      let lowerScores = 0;
+
+      for (let i = 0; i < similarShibas.length; i++) {
+        if (
+          Number(similarShibas[i][traitScore]) < Number(currShiba[traitScore])
+        ) {
+          lowerScores += 1;
+        }
       }
-      if (
-        Number(similarShibas[i].agility_score) < Number(currShiba.agility_score)
-      ) {
-        lowerAgilityScore += 1;
-      }
-      if (
-        Number(similarShibas[i].friendliness_score) <
-        Number(currShiba.friendliness_score)
-      ) {
-        lowerFriendlinessScore += 1;
-      }
-      if (
-        Number(similarShibas[i].intelligence_score) <
-        Number(currShiba.intelligence_score)
-      ) {
-        lowerIntelligenceScore += 1;
-      }
-    }
+      return lowerScores;
+    };
+    // for (let i = 0; i < similarShibas.length; i++) {
+    //   if (
+    //     Number(similarShibas[i].adaptability_score) <
+    //     Number(currShiba.adaptability_score)
+    //   ) {
+    //     lowerAdaptabilityScore += 1;
+    //   }
+    //   if (
+    //     Number(similarShibas[i].agility_score) < Number(currShiba.agility_score)
+    //   ) {
+    //     lowerAgilityScore += 1;
+    //   }
+    //   if (
+    //     Number(similarShibas[i].friendliness_score) <
+    //     Number(currShiba.friendliness_score)
+    //   ) {
+    //     lowerFriendlinessScore += 1;
+    //   }
+    //   if (
+    //     Number(similarShibas[i].intelligence_score) <
+    //     Number(currShiba.intelligence_score)
+    //   ) {
+    //     lowerIntelligenceScore += 1;
+    //   }
+    // }
 
     // Percentile = number of values below "x" / total number of values * 100
-    console.log("lower score", lowerAdaptabilityScore);
+    // console.log("lower score", lowerAdaptabilityScore);
     await setAdaptabilityPercentile(
-      (lowerAdaptabilityScore / similarShibas.length) * 100
+      (getScore("adaptability_score") / similarShibas.length) * 100
     );
     await setAgilityPercentile(
-      (lowerAgilityScore / similarShibas.length) * 100
+      (getScore("agility_score") / similarShibas.length) * 100
     );
     await setFriendlinessPercentile(
-      (lowerFriendlinessScore / similarShibas.length) * 100
+      (getScore("friendliness_score") / similarShibas.length) * 100
     );
     await setIntelligencePercentile(
-      (lowerIntelligenceScore / similarShibas.length) * 100
+      (getScore("intelligence_score") / similarShibas.length) * 100
     );
   };
   console.log(props);
 
   // Recalculates percentiles every time shiba changes
   useEffect(() => {
-    calculatePercentile(shiba.shiba_id);
+    calculatePercentile(shiba);
   }, [shiba]);
 
   return (

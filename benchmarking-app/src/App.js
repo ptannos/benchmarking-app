@@ -6,7 +6,6 @@ const App = () => {
   const [id, setId] = useState(0);
   const [shiba, setShiba] = useState({});
   const [exist, setExist] = useState(true);
-
   const [shelter, setShelter] = useState("");
 
   const getShelter = async (shiba) => {
@@ -66,6 +65,9 @@ const App = () => {
           {/* {console.log(shelter.shelter_name)} */}
           Available for adoption at:{" "}
           {Object.keys(shelter) !== 0 ? shelter.shelter_name : ""}
+          <br />
+          <button>LEARN MORE</button>
+          <br />
           <Percentile shiba={shiba} allShibas={allShibas} />
         </div>
       ) : null}
