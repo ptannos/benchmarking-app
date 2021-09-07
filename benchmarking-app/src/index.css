@@ -35,4 +35,18 @@ img {
 
 .form {
   margin: 15px;
+  font-size: 18px;
+}
+
+button {
+  font-size: 15px;
+  padding: 7px;
+  margin: 10px;
+  color: #767e63;
+  border: 1.5px solid #767e63;
+  border-radius: 3px;
+}
+
+input {
+  font-size: 15px;
 }

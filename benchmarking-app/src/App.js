@@ -66,7 +66,7 @@ const App = () => {
           Available for adoption at:{" "}
           {Object.keys(shelter) !== 0 ? shelter.shelter_name : ""}
           <br />
-          <button>LEARN MORE</button>
+          <button>Learn More</button>
           <br />
           <Percentile shiba={shiba} allShibas={allShibas} />
         </div>

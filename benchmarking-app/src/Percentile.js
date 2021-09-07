@@ -26,12 +26,12 @@ const Percentile = (props) => {
           lowerScores += 1;
         }
       }
+      // Percentile = number of values below "x" / total number of values * 100
       let score = (lowerScores / similarShibas.length) * 100;
 
       return score;
     };
 
-    // Percentile = number of values below "x" / total number of values * 100
     await setAdaptabilityPercentile(getScore("adaptability_score"));
     await setAgilityPercentile(getScore("agility_score"));
     await setFriendlinessPercentile(getScore("friendliness_score"));
