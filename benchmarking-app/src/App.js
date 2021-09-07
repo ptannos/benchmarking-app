@@ -36,22 +36,24 @@ const App = () => {
     await setExist(false);
   };
 
+  console.log(shiba);
   return (
     <div className="App">
       <img
         src="https://media3.giphy.com/media/1YeNJK6FptDdq1q59K/200.gif"
         alt="shiba gif"
       />
-
-      <div className="form">
-        <form id="App-form" onSubmit={handleSubmit}>
-          <label htmlFor="id">Enter Shiba's ID:</label>
-          <p>(Pick a number between 889 and 947)</p>
-          <input name="id" onChange={handleChange} />
-          <br />
-          <button type="submit">Submit</button>
-        </form>
-      </div>
+      {Object.keys(shiba).length === 0 ? (
+        <div className="form">
+          <form id="App-form" onSubmit={handleSubmit}>
+            <label htmlFor="id">Enter Shiba's ID:</label>
+            <p>(Pick a number between 889 and 947)</p>
+            <input name="id" onChange={handleChange} />
+            <br />
+            <button type="submit">Submit</button>
+          </form>
+        </div>
+      ) : null}
 
       {/* If a shiba with the ID is found, return results */}
       {exist === true && Object.keys(shiba).length !== 0 ? (
@@ -66,8 +68,8 @@ const App = () => {
           Available for adoption at:{" "}
           {Object.keys(shelter) !== 0 ? shelter.shelter_name : ""}
           <br />
-          <button>Learn More</button>
-          <br />
+          <button>More about {shiba.name}</button>
+          <button onClick={() => setShiba({})}>Search Another</button>
           <Percentile shiba={shiba} allShibas={allShibas} />
         </div>
       ) : null}
